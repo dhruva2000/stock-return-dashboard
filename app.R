@@ -5,13 +5,13 @@
 
 # Load packages
 library(shiny)
-library(shinythemes)
+library(bslib)
 source("./global.R")
 
 # Defining UI
-ui <- fluidPage(theme = shinytheme("darkly"),
+ui <- fluidPage(theme = bs_theme(bootswatch = "darkly"),
                 navbarPage(
-                  "Le Bitch Bot",
+                  "Gifted Group Finance Dashboard",
                   
                   tabPanel("Correlation of Indexes",
                            sidebarPanel(
