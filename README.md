@@ -21,6 +21,6 @@ It will load up this screen where you click on the data file you have. This csv 
 ## Goals and Updates
 The focus of this project was to come up with a way to visualize the correlation of various global indices, observe periods of drawdown, attempt to model what a custom portfolio of these indices might have historically returned as well as find a way to come up with a portfolio matching our target volatility
 
-This project was completed in 2021 with my friend Natthanon as part of our internship and was built off pre-existing projects by multiple users such as pmaji (https://github.com/pmaji/financial-asset-comparison-tool).
+This project was completed in 2021 with my friend and colleague as part of our internship and was built off pre-existing projects by multiple users such as pmaji (https://github.com/pmaji/financial-asset-comparison-tool).
 
 The codebase is not actively maintained and is only put up here for educational purposes. If there are any breaking updates to R/RStudio or the above libraries, you can reach out to me via email to notify me and I'll try to update the code.
