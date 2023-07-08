@@ -10,11 +10,41 @@ source("./global.R")
 
 # Defining UI
 ui <- fluidPage(theme = bs_theme(bootswatch = "darkly"),
+                #define the layout for each page with sidebar on the left and main content on the right
+                tags$style("
+                         .sidebar {
+                          position: fixed;
+                          top: 50px;
+                          bottom: 0;
+                          width: 250px;
+                          padding: 20px;
+                          overflow-y: auto;
+                         }
+                          
+                        .main {
+                          margin-left: 250px;
+                          padding: 20px;
+                        }
+                        
+                        @media (max-width: 768px) {
+                            .sidebar {
+                              position: static;
+                              width: auto;
+                              padding: 0;
+                              overflow-y: visible;
+                            }
+                            
+                            .main {
+                              margin-left: 0;
+                            }
+                          }"
+                ),
                 navbarPage(
-                  "Gifted Group Finance Dashboard",
-                  
+                  "Index Returns Dashboard",
                   tabPanel("Correlation of Indexes",
+                         sidebarLayout(
                            sidebarPanel(
+                             id = "sidebar",
                              tags$h3("Display Rolling Correlation of selected Indexes & Correlation Heatmap of all Indexes"),
                              tags$h4("Input:"),
                              dateRangeInput("corrrange", "Date Range",
@@ -30,128 +60,151 @@ ui <- fluidPage(theme = bs_theme(bootswatch = "darkly"),
                                          max = 52,
                                          value = 27),
                              selectInput("corrvar1", "First Index:",
-                                         choices= names(source_file[2:(length(source_file-1))])),
+                                         choices = names(source_file[2:(length(source_file) - 1)])),
                              selectInput("corrvar2", "Second Index:",
-                                         choices= names(source_file[2:(length(source_file-1))])),
-                             
-                           ), #sidebarpanel
-                           
+                                         choices = names(source_file[2:(length(source_file) - 1)])),
+                           ),
                            mainPanel(
+                             id = "main",
                              plotOutput(outputId = "roll_corr_plot"),
                              plotOutput(outputId = "corr_heat_plot"),
-                                    ), #mainPanel 
-                                                    ), #tabpanel
+                           )
+                         ),
+                         position = "left",
+                     ),
+                           
                   
                   tabPanel("Weekly Cumulative Returns",
-                           sidebarPanel(
-                             tags$h3("Display Weekly Cumulative Returns of selected Index"),
-                             tags$h4("Input:"),
-                             dateRangeInput("cumrange", "Date Range",
-                                            start = "2016-01-01",
-                                            end = "2021-04-02",
-                                            min = "2016-01-01",
-                                            max = "2021-04-02",
-                                            format = "yyyy/mm/dd",
-                                            separator = "to"),
-                             selectInput("cumvar", "Index",
-                                         choices= names(source_file[2:(length(source_file-1))])),
-                             ), #sidebarpanel
-                           
-                           mainPanel(
-                             plotOutput(outputId = "cum_return_plot"),
-                             textOutput(outputId = "cum_stats")
-                           ), #mainPanel
+                       sidebarLayout(
+                         sidebarPanel(
+                           id="sidebar",
+                           tags$h3("Display Weekly Cumulative Returns of selected Index"),
+                           tags$h4("Input:"),
+                           dateRangeInput("cumrange", "Date Range",
+                                          start = "2016-01-01",
+                                          end = "2021-04-02",
+                                          min = "2016-01-01",
+                                          max = "2021-04-02",
+                                          format = "yyyy/mm/dd",
+                                          separator = "to"),
+                           selectInput("cumvar", "Index",
+                                       choices= names(source_file[2:(length(source_file-1))])),
+                         ), #sidebarpanel
+                             
+                         mainPanel(
+                           id="main",
+                           plotOutput(outputId = "cum_return_plot"),
+                           textOutput(outputId = "cum_stats")
+                         ), #mainPanel
+                       )
                            
                   ), #tabpanel
                   
                   tabPanel("Distribution of Returns",
-                           sidebarPanel(
-                             tags$h3("Display Distribution of Returns of selected Index"),
-                             tags$h4("Input:"),
-                             dateRangeInput("distrange", "Date Range",
-                                            start = "2016-01-01",
-                                            end = "2021-04-02",
-                                            min = "2016-01-01",
-                                            max = "2021-04-02",
-                                            format = "yyyy/mm/dd",
-                                            separator = "to"),
-                             selectInput("distvar", "Index",
-                                         choices= names(source_file[2:(length(source_file-1))])),
-                           ), #sidebarpanel
-                           mainPanel(
-                             plotOutput(outputId = "plot_dist"),
-                           ), #mainPanel   
+                       sidebarLayout(
+                         sidebarPanel(
+                           id="sidebar",
+                           tags$h3("Display Distribution of Returns of selected Index"),
+                           tags$h4("Input:"),
+                           dateRangeInput("distrange", "Date Range",
+                                          start = "2016-01-01",
+                                          end = "2021-04-02",
+                                          min = "2016-01-01",
+                                          max = "2021-04-02",
+                                          format = "yyyy/mm/dd",
+                                          separator = "to"),
+                           selectInput("distvar", "Index",
+                                       choices= names(source_file[2:(length(source_file-1))])),
+                         ), #sidebarpanel
+                         mainPanel(
+                           id="main",
+                           plotOutput(outputId = "plot_dist"),
+                         ), #mainPanel   
+                       )
                   ), #tabpanel
                   
                   tabPanel("Drawdowns",
-                           sidebarPanel(
-                             tags$h3("Input:"),
-                             dateRangeInput("drawrange", "Date range",
-                                            start = "2016-01-01",
-                                            end = "2021-04-02",
-                                            min = "2016-01-01",
-                                            max = "2021-04-02",
-                                            format = "yyyy/mm/dd",
-                                            separator = "to"),
-                             selectInput("drawvar1", "First Index",
-                                         choices= names(source_file[2:(length(source_file)-1)])),
-                             selectInput("drawvar2", "Second Index",
-                                         choices= names(source_file[2:(length(source_file)-1)])),
-                           ), #sidebarpanel
-                           mainPanel(
-                             plotOutput(outputId = "drawrangeplot"),
-                           ), #mainPanel
+                        sidebarLayout(
+                          sidebarPanel(
+                            id="sidebar",
+                            tags$h3("Input:"),
+                            dateRangeInput("drawrange", "Date range",
+                                           start = "2016-01-01",
+                                           end = "2021-04-02",
+                                           min = "2016-01-01",
+                                           max = "2021-04-02",
+                                           format = "yyyy/mm/dd",
+                                           separator = "to"),
+                            selectInput("drawvar1", "First Index",
+                                        choices= names(source_file[2:(length(source_file)-1)])),
+                            selectInput("drawvar2", "Second Index",
+                                        choices= names(source_file[2:(length(source_file)-1)])),
+                          ), #sidebarpanel
+                          mainPanel(
+                            id="main",
+                            plotOutput(outputId = "drawrangeplot"),
+                          ), #mainPanel
+                        )
+                           
                   ), #tabpanel
                   
                   tabPanel("Custom Portfolio by Weight",
-                           sidebarPanel(
-                             tags$h3("Create your own Custom Portfolio by Asset Weight"),
-                             tags$h4("Input:"),
-                             dateRangeInput("customrange", "Date Range",
-                                            start = "2016-01-01",
-                                            end = "2021-04-02",
-                                            min = "2016-01-01",
-                                            max = "2021-04-02",
-                                            format = "yyyy/mm/dd",
-                                            separator = "to"),
-                             numericInput(inputId = "custom_csi500", "CSI500 (%)", value = 12, min = 0, max = 100),
-                             numericInput(inputId = "custom_shanghai", "Shanghai Stock Exchange (%)", value = 8, min = 0, max = 100),
-                             numericInput(inputId = "custom_csi300", "CSI300 (%)", value = 8, min = 0, max = 100),
-                             numericInput(inputId = "custom_hsi", "HSI (%)", value = 8, min = 0, max = 100),
-                             numericInput(inputId = "custom_sti", "STI (%)", value = 8, min = 0, max = 100),
-                             numericInput(inputId = "custom_twse", "TWSE (%)", value = 8, min = 0, max = 100),
-                             numericInput(inputId = "custom_msciw", "MSCI World (%)", value = 8, min = 0, max = 100),
-                             numericInput(inputId = "custom_sp500", "S&P500 (%)", value = 8, min = 0, max = 100),
-                             numericInput(inputId = "custom_n225", "Nikkei 225 (%)", value = 8, min = 0, max = 100),
-                             numericInput(inputId = "custom_lse", "London Stock Exchange (%)", value = 8, min = 0, max = 100),
-                             numericInput(inputId = "custom_asx", "ASX (%)", value = 8, min = 0, max = 100),
-                             numericInput(inputId = "custom_custom", "Custom Index (%)", value = 8, min = 0, max = 100),
-                           ), #sidebarpanel
-                           mainPanel(
-                             plotOutput(outputId = "custom_returns"),
-                             plotOutput(outputId = "custom_histogram"),
-                             textOutput(outputId = "custom_stats")
-                           ), #mainPanel
+                          sidebarLayout(
+                            sidebarPanel(
+                              id="sidebar",
+                              tags$h3("Create your own Custom Portfolio by Asset Weight"),
+                              tags$h4("Input:"),
+                              dateRangeInput("customrange", "Date Range",
+                                             start = "2016-01-01",
+                                             end = "2021-04-02",
+                                             min = "2016-01-01",
+                                             max = "2021-04-02",
+                                             format = "yyyy/mm/dd",
+                                             separator = "to"),
+                              numericInput(inputId = "custom_csi500", "CSI500 (%)", value = 12, min = 0, max = 100),
+                              numericInput(inputId = "custom_shanghai", "Shanghai Stock Exchange (%)", value = 8, min = 0, max = 100),
+                              numericInput(inputId = "custom_csi300", "CSI300 (%)", value = 8, min = 0, max = 100),
+                              numericInput(inputId = "custom_hsi", "HSI (%)", value = 8, min = 0, max = 100),
+                              numericInput(inputId = "custom_sti", "STI (%)", value = 8, min = 0, max = 100),
+                              numericInput(inputId = "custom_twse", "TWSE (%)", value = 8, min = 0, max = 100),
+                              numericInput(inputId = "custom_msciw", "MSCI World (%)", value = 8, min = 0, max = 100),
+                              numericInput(inputId = "custom_sp500", "S&P500 (%)", value = 8, min = 0, max = 100),
+                              numericInput(inputId = "custom_n225", "Nikkei 225 (%)", value = 8, min = 0, max = 100),
+                              numericInput(inputId = "custom_lse", "London Stock Exchange (%)", value = 8, min = 0, max = 100),
+                              numericInput(inputId = "custom_asx", "ASX (%)", value = 8, min = 0, max = 100),
+                              numericInput(inputId = "custom_custom", "Custom Index (%)", value = 8, min = 0, max = 100),
+                            ), #sidebarpanel
+                            mainPanel(
+                              id="main",
+                              plotOutput(outputId = "custom_returns"),
+                              plotOutput(outputId = "custom_histogram"),
+                              textOutput(outputId = "custom_stats")
+                            ), #mainPanel
+                          )
                 ), #tabpanel
                 
                 tabPanel("Target Volatility Portfolio",
-                         sidebarPanel(
-                           tags$h3("Find an optimised portfolio to achieve maximum return for a given level of risk/volatility"),
-                           tags$h4("Input:"),
-                           checkboxGroupInput("portfolio_selection",
-                                              "Select Number of Indexes for Portfolio",
-                                              choices = list()),
-                                                   
-                           numericInput(inputId = "n_points", "Number of random points to generate", value = 10000, min = 10000, max = 1000000),
-                           numericInput(inputId = "target_vol", "Target Volatility", value = 13.5, min = 0, max = 100),
-                           tags$h5("As observed from the vertical line representing the specified target volatility, there are multiple returns that one can achieve for a given level of risk, 
+                         sidebarLayout(
+                           sidebarPanel(
+                             id="sidebar",
+                             tags$h3("Find an optimised portfolio to achieve maximum return for a given level of risk/volatility"),
+                             tags$h4("Input:"),
+                             checkboxGroupInput("portfolio_selection",
+                                                "Select Number of Indexes for Portfolio",
+                                                choices = list()),
+                             
+                             numericInput(inputId = "n_points", "Number of random points to generate", value = 10000, min = 10000, max = 1000000),
+                             numericInput(inputId = "target_vol", "Target Volatility", value = 13.5, min = 0, max = 100),
+                             tags$h5("As observed from the vertical line representing the specified target volatility, there are multiple returns that one can achieve for a given level of risk, 
                                    displaying the ability of diversification to bring about greater returns for the same level of risk/volatility")
                            ), #sidebarpanel
-                         mainPanel(
-                           plotOutput(outputId = "target_plot"),
-                         ), #mainPanel
-                ) #tabpanel
-                ) #navbarPage
+                           mainPanel(
+                             id="main",
+                             plotOutput(outputId = "target_plot"),
+                           ), #mainPanel
+                         )
+                  ) #tabpanel
+                ) #overall navbarPage
 ) #fluidPage
       
 server <- function(input, output, session) {
