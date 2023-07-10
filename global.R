@@ -1,5 +1,5 @@
 ####################################
-# Authors: Natthanon Tan           #
+# Authors: Colleague 1             #
 #          Dhruva Reddy            #
 ####################################
 
